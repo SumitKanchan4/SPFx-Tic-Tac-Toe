@@ -1,0 +1,11 @@
+{
+  "$schema": "https://dev.office.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "spfx-ttt-client-side-solution",
+    "id": "fae504bc-1ef4-40d0-965e-10279da1ff1a",
+    "version": "1.0.0.0"
+  },
+  "paths": {
+    "zippedPackage": "solution/spfx-ttt.sppkg"
+  }
+}

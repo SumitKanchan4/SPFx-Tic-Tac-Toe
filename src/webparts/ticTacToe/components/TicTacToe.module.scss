@@ -1,0 +1,36 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.ticTacToe {
+  .container {
+    max-width: 400px;
+    padding: 5px;
+    margin: 0px auto;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+    width:100% !important;
+  }
+
+  .colorRed{
+    color: red;
+  }
+  .colorBlue{
+    color: blue;
+  }
+  .colorGold{
+    color: goldenrod;
+  }
+  .textCenter{
+    text-align: center;
+  }
+  .rewardPad{
+    padding: 4px 0 0 4px;
+  }
+  .borderRight{
+    border-right: 2px solid grey;
+  }
+  .borderBottom{
+    border-bottom: 2px solid grey;
+  }
+  .padGrid{
+    padding: 10px;
+  }
+}
