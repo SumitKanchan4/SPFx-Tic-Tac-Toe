@@ -118,7 +118,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
           this.state.board[cellID] == undefined ?
             <Link className={`${styles.emptyCell}`} onClick={() => this.cellClicked(cellID)}></Link>
             :
-            <Label className={`${styles.filledCell}`}>{this.state.playerSymbol}</Label>
+            <Label className={`${styles.filledCell} ${this.state.board[cellID] == 'X' ? styles.colorRed : styles.colorBlue}`}>{this.state.board[cellID]}</Label>
         }
       </div>
     );
@@ -224,6 +224,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
     let nextWinMove: number = undefined;
     let winCondLength: number = this.winConditions.length;
     let index: number = 0;
+    let possibleMoves: number[] = this.possibleMoves();
 
     while (nextWinMove == undefined && index < winCondLength) {
 
@@ -243,7 +244,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
       index++;
     }
 
-    return nextWinMove;
+    return possibleMoves.indexOf(nextWinMove) >= 0 ? nextWinMove : undefined;
 
   }
 
@@ -252,6 +253,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
 
     // Check if user won
     let userWon: any = this.isWin(this.state.playerSymbol);
+    console.log(`User Won:${userWon}`);
 
     if (userWon) {
       alert('user won');
@@ -261,28 +263,37 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
 
       // Check if comp can win in next move
       nextMove = this.getNextMove(this.state.computerSymbol);
+      console.log(`Next Move for comuter to win: ${nextMove}`);
 
       // Check if the player can move in the next win , block it
       if (nextMove == undefined) {
         nextMove = this.getNextMove(this.state.playerSymbol);
+        console.log(`Next Move for user to win: ${nextMove}`);
       }
 
       // Try to place in center if available
       if (nextMove == undefined && this.state.board[4] == undefined) {
+        console.log(`Center: ${4}`);
         nextMove = 4;
       }
 
       // Try to get any corner
       if (nextMove == undefined) {
         nextMove = this.state.board[0] == undefined ? 0 : this.state.board[2] == undefined ? 2 : this.state.board[6] == undefined ? 6 : this.state.board[8] == undefined ? 8 : undefined;
+        console.log(`Moving to corner: ${nextMove}`);
       }
 
       // make one of the possible moves
-      let possibleMoves: number[] = this.possibleMoves();
-      while (nextMove == undefined && nextMove > possibleMoves.length) {
-        nextMove = Math.random() * 10;
+      if (nextMove == undefined) {
+        let possibleMoves: number[] = this.possibleMoves();
+        while ((nextMove == undefined || nextMove > possibleMoves.length) && possibleMoves.length > 0) {
+          nextMove = Math.random() * 10;
+          console.log(`Random NUmber: ${nextMove}`);
+        }
+        nextMove = possibleMoves[nextMove];
+        console.log(`Final Possible move: ${nextMove}`);
+
       }
-      nextMove = possibleMoves[nextMove];
 
       let boardTemp = this.state.board;
       boardTemp[nextMove] = this.state.computerSymbol;
