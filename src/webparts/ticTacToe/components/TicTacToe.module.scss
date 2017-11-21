@@ -18,19 +18,47 @@
   .colorGold{
     color: goldenrod;
   }
-  .textCenter{
-    text-align: center;
-  }
+ .colorGreen{
+   color: green;
+ }
+ .colorPink{
+   color: palevioletred;
+   font-weight: bold;
+ }
   .rewardPad{
-    padding: 4px 0 0 4px;
+    padding: 4px 0 0 4px;    
   }
-  .borderRight{
-    border-right: 2px solid grey;
+  .borderLeft{
+    border-left: 2px solid lightgray;
   }
   .borderBottom{
-    border-bottom: 2px solid grey;
+    border-bottom: 2px solid lightgray;
   }
   .padGrid{
-    padding: 10px;
+    padding: 10px;    
+  }
+  .emptyCell{
+    width:100%;
+    height: 50px;
+  }
+  .filledCell{
+    width: 100%;
+    height: 53px;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    font-size-adjust: 30px !important;
+    font-size: 30px;
+    color:red;
+    line-height: 40px;
+  }
+  .floatRt{
+    float: right;
+  }
+  .txtBold{
+    font-weight: bolder;
+  }
+  .disable{
+    pointer-events:none;
   }
 }

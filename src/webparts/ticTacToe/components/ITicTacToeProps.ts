@@ -1,5 +1,5 @@
 export interface ITicTacToeProps {
-  description: string;
+  userName:string;
 }
 
 export interface ITicTacToeState {
@@ -9,4 +9,6 @@ export interface ITicTacToeState {
   startGame?: boolean;
   playerWonCount?: number;
   compWonCount?: number;
+  totalCount?:number;
+  openDialog?:boolean;
 }

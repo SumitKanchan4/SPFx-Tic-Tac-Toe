@@ -12,7 +12,7 @@ import TicTacToe from './components/TicTacToe';
 import { ITicTacToeProps } from './components/ITicTacToeProps';
 
 export interface ITicTacToeWebPartProps {
-  description: string;
+  userName: string;
 }
 
 export default class TicTacToeWebPart extends BaseClientSideWebPart<ITicTacToeWebPartProps> {
@@ -21,7 +21,7 @@ export default class TicTacToeWebPart extends BaseClientSideWebPart<ITicTacToeWe
     const element: React.ReactElement<ITicTacToeProps > = React.createElement(
       TicTacToe,
       {
-        description: this.properties.description
+        userName: this.context.pageContext.user.loginName
       }
     );
 
