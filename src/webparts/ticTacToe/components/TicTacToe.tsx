@@ -154,6 +154,8 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
   }
 
   public componentDidMount(): void {
+
+    this.getUserContext();
     this.createBoard();
   }
 
@@ -285,6 +287,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
 
     if (userWon) {
       this.setState({ gameFinish: true, playerWonCount: this.state.playerWonCount + 1, totalCount: this.state.totalCount + 1 });
+      this.setUserContext({ total: this.state.totalCount, player: this.state.playerWonCount, computer: this.state.compWonCount });
       alert('user won');
 
     }
@@ -329,14 +332,18 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
         let boardTemp = this.state.board;
         boardTemp[nextMove] = this.computerSymbol;
         this.setState({ board: boardTemp }, () => {
+
+          // Check if the computer wins with the next move
           if (this.isWin(this.computerSymbol)) {
             this.setState({ gameFinish: true, totalCount: this.state.totalCount + 1, compWonCount: this.state.compWonCount + 1 });
+            this.setUserContext({ total: this.state.totalCount, player: this.state.playerWonCount, computer: this.state.compWonCount });
             alert('computer won');
           }
         });
       }
       else {
         this.setState({ gameFinish: true, totalCount: this.state.totalCount + 1 });
+        this.setUserContext({ total: this.state.totalCount, player: this.state.playerWonCount, computer: this.state.compWonCount });
       }
     }
   }
@@ -356,6 +363,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
    * @param object Object that contains the user context
    */
   private setUserContext(object: any): void {
+
     if (this.getStorage) {
       this.getStorage.setItem(this.storageKey, JSON.stringify(object));
     }
@@ -365,8 +373,13 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
    * Returns the user context from the local storage
    * */
   private getUserContext(): void {
+
     if (this.getStorage) {
-      this.getStorage.getItem(this.storageKey);
+      let savedValues: any = JSON.parse(this.getStorage.getItem(this.storageKey));
+
+      if (savedValues != undefined) {
+        this.setState({ totalCount: savedValues.total, playerWonCount: savedValues.player, compWonCount: savedValues.computer });
+      }
     }
   }
 
