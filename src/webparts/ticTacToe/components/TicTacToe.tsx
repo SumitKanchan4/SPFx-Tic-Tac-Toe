@@ -1,28 +1,27 @@
 import * as React from 'react';
 import styles from './TicTacToe.module.scss';
 import { ITicTacToeProps, ITicTacToeState } from './ITicTacToeProps';
-import { escape } from '@microsoft/sp-lodash-subset';
+import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 
 export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacToeState> {
 
-  private storageKey: string = ``;
+  private storageKey: string = this.props.userName;
 
-  private diagnal: any[] = [];
   private winConditions: any[] = [[0, 4, 8], [2, 4, 6], [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8]];
+  private playerSymbol: string = 'X';
+  private computerSymbol: string = 'O';
 
   constructor(props: ITicTacToeProps) {
     super(props);
     this.state = {
       board: [],
-      playerSymbol: 'X',
-      computerSymbol: 'O',
       startGame: false,
       compWonCount: 0,
       playerWonCount: 0,
       totalCount: 0,
-      openDialog: false
+      gameFinish: false
     };
   }
 
@@ -31,6 +30,8 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
       <div className={styles.ticTacToe}>
         <div className={styles.container}>
           <div className={`ms-Grid`}>
+
+            {/* Header */}
             <div className={`ms-Grid-row`}>
               <div className={`ms-Grid-col ms-sm12 ms-md10`}>
                 <h1>Tic Tac Toe</h1>
@@ -43,6 +44,8 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
                 </h3>
               </div>
             </div>
+
+            {/* Game Stats Row */}
             <div className={`ms-Grid-row`}>
               <div className={`ms-Grid-col ms-md4 ms-sm12`}>
                 <strong>Total</strong>
@@ -57,12 +60,14 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
                 <i className={`ms-Icon ms-Icon--Trophy2Solid ${styles.colorBlue} ${styles.rewardPad}`} aria-hidden="true"></i> : {this.state.compWonCount}
               </div>
             </div>
+
+            {/* Start Game */}
             <div className={`ms-Grid-row`}>
               {
                 !this.state.startGame ?
-                  <div className={`ms-Grid-col ms-sm12`}>
+                  <div className={`ms-Grid-col ms-smPush4 ms-sm4`}>
                     <h3>
-                      <Link onClick={() => this.startGame()}>Click here to start the game</Link>
+                      <PrimaryButton onClick={() => this.startGame()}>Play Game</PrimaryButton>
                     </h3>
                   </div>
                   :
@@ -70,6 +75,30 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
                   </div>
               }
             </div>
+
+            {/* Game End / Continue Playing */}
+            {
+              this.state.gameFinish ?
+                <div className={`ms-Grid-row`}>
+                  <div className={`ms-Grid-col ms-sm4`}>
+                    <h3>
+                      <PrimaryButton onClick={() => this.playAgain()}>Play Again</PrimaryButton>
+                    </h3>
+                  </div>
+                  <div className={`ms-Grid-col ms-sm4`}>
+                    <h3>
+                      <PrimaryButton onClick={() => this.cancelPlay()}>Cancel</PrimaryButton>
+                    </h3>
+                  </div>
+                </div>
+                :
+                <div className={`ms-Grid-row`}>
+                  <div className={`ms-Grid-col ms-sm12`}>
+                  </div>
+                </div>
+            }
+
+
             {
               this.state.startGame ?
                 <div className={`ms-Grid-row ${styles.padGrid}`}>
@@ -129,7 +158,8 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
   }
 
   private startGame(): void {
-    this.setState({ startGame: true });
+    this.createBoard();
+    this.setState({ startGame: true, gameFinish: false });
   }
 
   /**
@@ -166,13 +196,10 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
 
   private cellClicked(id: number): void {
     let tempBoard: string[] = this.state.board;
-    tempBoard[id] = this.state.playerSymbol;
+    tempBoard[id] = this.playerSymbol;
     this.setState({ board: tempBoard }, () => {
       this.getComputerMove();
     });
-
-    // Check if the user won
-
   }
 
   /**
@@ -225,6 +252,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
     let winCondLength: number = this.winConditions.length;
     let index: number = 0;
     let possibleMoves: number[] = this.possibleMoves();
+    let opposite: string = letter == this.playerSymbol ? this.computerSymbol : this.playerSymbol;
 
     while (nextWinMove == undefined && index < winCondLength) {
 
@@ -232,13 +260,13 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
       let bor: string[] = this.state.board;
 
       // check for next move win
-      if (bor[winCondItem[0]] == letter && bor[winCondItem[1]] == letter) {
+      if (bor[winCondItem[0]] == letter && bor[winCondItem[1]] == letter && bor[winCondItem[2]] != opposite) {
         nextWinMove = winCondItem[2];
       }
-      else if (bor[winCondItem[1]] == letter && bor[winCondItem[2]] == letter) {
+      else if (bor[winCondItem[1]] == letter && bor[winCondItem[2]] == letter && bor[winCondItem[0]] != opposite) {
         nextWinMove = winCondItem[0];
       }
-      else if (bor[winCondItem[0]] == letter && bor[winCondItem[2]] == letter) {
+      else if (bor[winCondItem[0]] == letter && bor[winCondItem[2]] == letter && bor[winCondItem[1]] != opposite) {
         nextWinMove = winCondItem[1];
       }
       index++;
@@ -252,67 +280,65 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
   private getComputerMove(): void {
 
     // Check if user won
-    let userWon: any = this.isWin(this.state.playerSymbol);
+    let userWon: any = this.isWin(this.playerSymbol);
     console.log(`User Won:${userWon}`);
 
     if (userWon) {
+      this.setState({ gameFinish: true, playerWonCount: this.state.playerWonCount + 1, totalCount: this.state.totalCount + 1 });
       alert('user won');
+
     }
     else {
       let nextMove: number = undefined;
 
       // Check if comp can win in next move
-      nextMove = this.getNextMove(this.state.computerSymbol);
+      nextMove = this.getNextMove(this.computerSymbol);
       console.log(`Next Move for comuter to win: ${nextMove}`);
 
       // Check if the player can move in the next win , block it
       if (nextMove == undefined) {
-        nextMove = this.getNextMove(this.state.playerSymbol);
+        nextMove = this.getNextMove(this.playerSymbol);
         console.log(`Next Move for user to win: ${nextMove}`);
       }
 
-      // Try to place in center if available
-      if (nextMove == undefined && this.state.board[4] == undefined) {
-        console.log(`Center: ${4}`);
-        nextMove = 4;
-      }
+      // // Try to place in center if available
+      // if (nextMove == undefined && this.state.board[4] == undefined) {
+      //   console.log(`Center: ${4}`);
+      //   nextMove = 4;
+      // }
 
-      // Try to get any corner
-      if (nextMove == undefined) {
-        nextMove = this.state.board[0] == undefined ? 0 : this.state.board[2] == undefined ? 2 : this.state.board[6] == undefined ? 6 : this.state.board[8] == undefined ? 8 : undefined;
-        console.log(`Moving to corner: ${nextMove}`);
-      }
+      // // Try to get any corner
+      // if (nextMove == undefined) {
+      //   nextMove = this.state.board[0] == undefined ? 0 : this.state.board[2] == undefined ? 2 : this.state.board[6] == undefined ? 6 : this.state.board[8] == undefined ? 8 : undefined;
+      //   console.log(`Moving to corner: ${nextMove}`);
+      // }
 
       // make one of the possible moves
       if (nextMove == undefined) {
         let possibleMoves: number[] = this.possibleMoves();
         while ((nextMove == undefined || nextMove > possibleMoves.length) && possibleMoves.length > 0) {
-          nextMove = Math.random() * 10;
+          nextMove = Math.round(Math.random() * 10);
           console.log(`Random NUmber: ${nextMove}`);
         }
-        nextMove = possibleMoves[nextMove];
+        nextMove = nextMove == undefined ? undefined : possibleMoves[nextMove];
         console.log(`Final Possible move: ${nextMove}`);
 
       }
 
-      let boardTemp = this.state.board;
-      boardTemp[nextMove] = this.state.computerSymbol;
-      this.setState({ board: boardTemp }, () => {
-        if (this.isWin(this.state.computerSymbol)) {
-          alert('computer won');
-        }
-      });
-
+      if (nextMove != undefined) {
+        let boardTemp = this.state.board;
+        boardTemp[nextMove] = this.computerSymbol;
+        this.setState({ board: boardTemp }, () => {
+          if (this.isWin(this.computerSymbol)) {
+            this.setState({ gameFinish: true, totalCount: this.state.totalCount + 1, compWonCount: this.state.compWonCount + 1 });
+            alert('computer won');
+          }
+        });
+      }
+      else {
+        this.setState({ gameFinish: true, totalCount: this.state.totalCount + 1 });
+      }
     }
-    // Get the possible moves
-
-
-
-
-
-    // Try to make one of the corners if they are free
-    // Chose random number for the next move
-
   }
 
   /**
@@ -354,13 +380,14 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
     }
   }
 
-  private _showDialog() {
-    this.setState({ openDialog: true });
+  private playAgain(): void {
+    this.createBoard();
+    this.setState({ gameFinish: false });
+
   }
 
-  private _closeDialog() {
-    this.setState({ openDialog: false });
+  private cancelPlay(): void {
+    this.setState({ startGame: false, gameFinish: false });
   }
-
 }
 
