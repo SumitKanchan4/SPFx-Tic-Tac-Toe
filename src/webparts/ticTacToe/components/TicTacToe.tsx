@@ -304,28 +304,35 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
         console.log(`Next Move for user to win: ${nextMove}`);
       }
 
-      // // Try to place in center if available
-      // if (nextMove == undefined && this.state.board[4] == undefined) {
-      //   console.log(`Center: ${4}`);
-      //   nextMove = 4;
-      // }
+      // Try to get any corner or the center
+      if (nextMove == undefined) {
+        let moves: number[] = [0, 2, 4, 6, 8];
 
-      // // Try to get any corner
-      // if (nextMove == undefined) {
-      //   nextMove = this.state.board[0] == undefined ? 0 : this.state.board[2] == undefined ? 2 : this.state.board[6] == undefined ? 6 : this.state.board[8] == undefined ? 8 : undefined;
-      //   console.log(`Moving to corner: ${nextMove}`);
-      // }
+        // loop over all moves and get the random move
+        while (nextMove == undefined && moves.length > 0) {
+          // get the random number
+          let randomIndex: number = Math.round(Math.random() * 10);
+
+          // get the random index within the array range
+          randomIndex = randomIndex % moves.length;
+
+          // check if the move is valid
+          nextMove = this.state.board[moves[randomIndex]] == undefined ? moves[randomIndex] : undefined;
+
+          // remove the element from the moves array 
+          moves.splice(randomIndex, 1);
+        }
+        console.log(`Moving to corner: ${nextMove}`);
+      }
 
       // make one of the possible moves
       if (nextMove == undefined) {
         let possibleMoves: number[] = this.possibleMoves();
-        while ((nextMove == undefined || nextMove > possibleMoves.length) && possibleMoves.length > 0) {
-          nextMove = Math.round(Math.random() * 10);
-          console.log(`Random NUmber: ${nextMove}`);
-        }
-        nextMove = nextMove == undefined ? undefined : possibleMoves[nextMove];
+        while (nextMove == undefined && possibleMoves.length > 0) {
+          let move = Math.round(Math.random() * 10) % possibleMoves.length;
+          nextMove = possibleMoves[move];          
+        }        
         console.log(`Final Possible move: ${nextMove}`);
-
       }
 
       if (nextMove != undefined) {
@@ -342,6 +349,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
         });
       }
       else {
+        // Draw the game
         this.setState({ gameFinish: true, totalCount: this.state.totalCount + 1 });
         this.setUserContext({ total: this.state.totalCount, player: this.state.playerWonCount, computer: this.state.compWonCount });
       }
