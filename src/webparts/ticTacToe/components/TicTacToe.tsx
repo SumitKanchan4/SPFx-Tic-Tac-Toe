@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styles from './TicTacToe.module.scss';
 import { ITicTacToeProps, ITicTacToeState } from './ITicTacToeProps';
-import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import { Button, ButtonType } from 'office-ui-fabric-react/lib/Button';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 
@@ -33,7 +33,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
 
             {/* Header */}
             <div className={`ms-Grid-row`}>
-              <div className={`ms-Grid-col ms-sm12 ms-md10`}>
+              <div className={`ms-Grid-col ms-sm11 ms-md10 ${styles.txtCenter} `}>
                 <h1>Tic Tac Toe</h1>
               </div>
               <div className={`ms-Grid-col ms-md2 ms-hiddenSm`}>
@@ -42,6 +42,11 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
                     <i className={`ms-Icon ms-Icon--EraseTool ${styles.colorPink} ${styles.rewardPad}`} aria-hidden="true"></i>
                   </Link>
                 </h3>
+              </div>
+              <div className={`ms-Grid-col ms-sm1 ms-hiddenMdUp`}>
+                  <Link onClick={() => this.clearUserContext()} className={`${styles.floatRt}`}>
+                    <i className={`ms-Icon ms-Icon--EraseTool ${styles.colorPink} ${styles.rewardPad}`} aria-hidden="true"></i>
+                  </Link>
               </div>
             </div>
 
@@ -65,10 +70,8 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
             <div className={`ms-Grid-row`}>
               {
                 !this.state.startGame ?
-                  <div className={`ms-Grid-col ms-smPush4 ms-sm4`}>
-                    <h3>
-                      <PrimaryButton onClick={() => this.startGame()}>Play Game</PrimaryButton>
-                    </h3>
+                  <div className={`ms-Grid-col ms-smPush4 ms-sm4 ${styles.padGrid}`}>
+                    <Button buttonType={ButtonType.primary} onClick={() => this.startGame()}>Play Game</Button>
                   </div>
                   :
                   <div className={`ms-Grid-col ms-sm12`}>
@@ -79,38 +82,39 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
             {/* Game End / Continue Playing */}
             {
               this.state.gameFinish ?
-                <div className={`ms-Grid-row`}>
-                  <div className={`ms-Grid-col ms-sm4`}>
-                    <h3>
-                      <PrimaryButton onClick={() => this.playAgain()}>Play Again</PrimaryButton>
-                    </h3>
+                <div className={`ms-Grid-row ${styles.pad10}`}>
+                  <div className={`ms-Grid-col ms-sm2`}>
                   </div>
                   <div className={`ms-Grid-col ms-sm4`}>
-                    <h3>
-                      <PrimaryButton onClick={() => this.cancelPlay()}>Cancel</PrimaryButton>
-                    </h3>
+                    <Button buttonType={ButtonType.hero} onClick={() => this.playAgain()}>Play Again</Button>
+                  </div>
+                  <div className={`ms-Grid-col ms-sm4`}>
+                    <Button buttonType={ButtonType.hero} onClick={() => this.cancelPlay()}>Cancel</Button>
                   </div>
                 </div>
                 :
-                <div className={`ms-Grid-row`}>
+                <div className={`ms-Grid-row ${styles.pad10}`}>
                   <div className={`ms-Grid-col ms-sm12`}>
                   </div>
                 </div>
             }
 
-
+            {/* Game Grid */}
             {
               this.state.startGame ?
-                <div className={`ms-Grid-row ${styles.padGrid}`}>
+                <div className={`ms-Grid-row ${styles.padGrid} ${this.state.gameFinish ? styles.disable : ''}`}>
                   <div className={`ms-Grid`}>
                     <div className={`ms-Grid-row`}>
                       <div className={`ms-Grid-col ms-sm12`}>
                         <div className={`ms-Grid-row`}>
-                          <div className={`ms-Grid-col ms-sm12`}>
-                            <Link onClick={() => this.refreshGame()} className={styles.floatRt}>
-                              <strong><i className={`ms-Icon ms-Icon--Refresh ${styles.colorGreen} ${styles.txtBold}`} aria-hidden="true"></i></strong>
-                            </Link>
-                          </div>
+                          {
+                            this.state.gameFinish ? <div></div> :
+                              <div className={`ms-Grid-col ms-sm12`}>
+                                <Link onClick={() => this.refreshGame()} className={styles.floatRt}>
+                                  <strong><i className={`ms-Icon ms-Icon--Refresh ${styles.colorGreen} ${styles.txtBold}`} aria-hidden="true"></i></strong>
+                                </Link>
+                              </div>
+                          }
                         </div>
                         <div className={`ms-Grid-row`}>
                           {this.cellTemplate(0)}
@@ -161,7 +165,16 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
 
   private startGame(): void {
     this.createBoard();
+    this.getFirstMoveBy();
     this.setState({ startGame: true, gameFinish: false });
+  }
+
+  private getFirstMoveBy(): void {
+
+    let random: number = Math.round(Math.random() * 10);
+    if (random > 5) {
+      this.getComputerMove();
+    }
   }
 
   /**
@@ -282,10 +295,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
   private getComputerMove(): void {
 
     // Check if user won
-    let userWon: any = this.isWin(this.playerSymbol);
-    console.log(`User Won:${userWon}`);
-
-    if (userWon) {
+    if (this.isWin(this.playerSymbol)) {
       this.setState({ gameFinish: true, playerWonCount: this.state.playerWonCount + 1, totalCount: this.state.totalCount + 1 });
       this.setUserContext({ total: this.state.totalCount, player: this.state.playerWonCount, computer: this.state.compWonCount });
       alert('user won');
@@ -330,8 +340,8 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
         let possibleMoves: number[] = this.possibleMoves();
         while (nextMove == undefined && possibleMoves.length > 0) {
           let move = Math.round(Math.random() * 10) % possibleMoves.length;
-          nextMove = possibleMoves[move];          
-        }        
+          nextMove = possibleMoves[move];
+        }
         console.log(`Final Possible move: ${nextMove}`);
       }
 
@@ -364,6 +374,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
     if (this.getStorage) {
       this.getStorage.removeItem(this.storageKey);
     }
+    this.setState({ totalCount: 0, playerWonCount: 0, compWonCount: 0 });
   }
 
   /**
@@ -404,7 +415,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
   private playAgain(): void {
     this.createBoard();
     this.setState({ gameFinish: false });
-
+    this.getFirstMoveBy();
   }
 
   private cancelPlay(): void {
