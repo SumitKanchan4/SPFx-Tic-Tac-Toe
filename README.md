@@ -39,8 +39,9 @@ For deployment follow the below steps
     gulp serve --nobrowser
     gulp package-solution --ship
     ```
-    - Now upload the weather.sppkg file from sharepoint/solution folder
+    - Now upload the .sppkg file from sharepoint/solution folder
     - Upload the files inside temp/deploy to the cdnBasePath url
+    - Install the app in the site
 - Now add the webpart to the page
  
 
