@@ -36,7 +36,7 @@ For deployment follow the below steps
     - Run the following commands
     ```sh
     gulp
-    gulp serve --nobrowser
+    gulp bundle --ship
     gulp package-solution --ship
     ```
     - Now upload the .sppkg file from sharepoint/solution folder
