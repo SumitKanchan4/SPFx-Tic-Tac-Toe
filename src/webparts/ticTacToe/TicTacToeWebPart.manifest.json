@@ -14,8 +14,8 @@
   "requiresCustomScript": false,
 
   "preconfiguredEntries": [{
-    "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
-    "group": { "default": "Game" },
+    "groupId": "350772e5-335e-4ba2-9093-226b5540a83a", 
+    "group": { "default": "Entertainment" },
     "title": { "default": "TicTacToe" },
     "description": { "default": "Play and enjoy with work" },    
     "iconImageUrl": "https://raw.githubusercontent.com/SumitKanchan4/SPFx-Tic-Tac-Toe/master/Images/icon.png",
