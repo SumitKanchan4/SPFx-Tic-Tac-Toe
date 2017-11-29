@@ -15,12 +15,12 @@
 
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
-    "group": { "default": "Other" },
+    "group": { "default": "Game" },
     "title": { "default": "TicTacToe" },
-    "description": { "default": "Play &amp; enjoy with work" },
-    "officeFabricIconFontName": "Page",
+    "description": { "default": "Play and enjoy with work" },    
+    "iconImageUrl": "https://raw.githubusercontent.com/SumitKanchan4/SPFx-Tic-Tac-Toe/master/Images/icon.png",
     "properties": {
-      "description": "TicTacToe"
+      "description": "Tic Tac Toe Game"
     }
   }]
 }
