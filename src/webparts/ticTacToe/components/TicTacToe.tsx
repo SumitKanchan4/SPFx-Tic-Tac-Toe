@@ -165,7 +165,6 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
 
   private startGame(): void {
     this.createBoard();
-    this.getFirstMoveBy();
     this.setState({ startGame: true, gameFinish: false });
   }
 
@@ -186,7 +185,9 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
     for (let i = 0; i < 9; i++) {
       tempBoard[i] = undefined;
     }
-    this.setState({ board: tempBoard });
+    this.setState({ board: tempBoard },()=>{
+      this.getFirstMoveBy();
+    });
   }
 
   /**
@@ -414,8 +415,7 @@ export default class TicTacToe extends React.Component<ITicTacToeProps, ITicTacT
 
   private playAgain(): void {
     this.createBoard();
-    this.setState({ gameFinish: false });
-    this.getFirstMoveBy();
+    this.setState({ gameFinish: false });    
   }
 
   private cancelPlay(): void {
